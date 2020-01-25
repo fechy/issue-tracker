@@ -16,13 +16,13 @@ describe('controllers/issues/controller', () => {
       {
         user: 'user1',
         description: 'Open issue',
-        agent: null,
+        agentId: null,
         status: IssueStatus.OPEN
       },
       {
         user: 'user1',
         description: 'Pending issue',
-        agent: agent.id,
+        agentId: agent.id,
         status: IssueStatus.PENDING
       },
     ]);

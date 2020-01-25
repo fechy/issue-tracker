@@ -18,13 +18,13 @@ class IssuesController {
 
     const freeAgent = await Agent.findAvailable();
     const status = freeAgent ? IssueStatus.PENDING : IssueStatus.OPEN;
-    const agent = freeAgent ? freeAgent.id : null;
+    const agentId = freeAgent ? freeAgent.id : null;
 
     const newIssue = await Issue.create({
       user,
       description,
       status,
-      agent
+      agentId
     });
 
     if (newIssue && freeAgent) {
