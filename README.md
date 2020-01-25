@@ -8,7 +8,7 @@ Run this commands in sequence:
 - `npm install`
 - `docker-compose -f docker/docker-compose.yaml up -d` <= To get Postgres up
 - Wait a few seconds until docker has finished bringing up both services
-- `npm run db:migrate` <= Only the fist time, to create dummy data (If it fails the first time, try once more)
+- `npm run db:migrate`
 - `npm run db:seed` <= Only the fist time, to create dummy data
 - `npm run start`
 
@@ -31,3 +31,11 @@ We use Postgres to keep the relations between models.
 - [x] Support agents can only handle one issue at a time. (New issues will remain OPEN until an agent becomes free)
 - [x] Support agents resolve issues: once done the issue is marked as resolved and the support agent becomes available to take a new issue.
 - [x] The system should be able to assign unassigned issues automatically when a support agent becomes available.
+
+# Note
+`.env` files pushed on purpose to ease start of the application. Either way they are not exposing any sensitive data.
+
+# What I would like to do if I had more time?
+- [ ] Integration tests
+- [ ] Proper error handling
+- [ ] Typescript
