@@ -1,6 +1,12 @@
+const Agent = require('../../models/agent');
+
 class AgentsController {
-  getAvailable(ctx) {
-    return [];
+  getAvailable() {
+    return Agent.findAll({
+      where: {
+        busy: false
+      }
+    });
   }
 }
 

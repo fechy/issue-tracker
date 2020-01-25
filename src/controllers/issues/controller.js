@@ -1,6 +1,12 @@
+const { Issue, IssueStatus } = require('../../models/issue');
+
 class IssuesController {
-  getOpen(ctx) {
-    return [];
+  getOpen() {
+    return Issue.findAll({
+      where: {
+        status: IssueStatus.OPEN
+      }
+    });
   }
 }
 
