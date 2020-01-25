@@ -2,7 +2,15 @@ const Sequelize = require('sequelize');
 const sequelize = require('../database');
 
 const Model = Sequelize.Model;
-class Agent extends Model {}
+class Agent extends Model {
+  static findAvailable() {
+    return this.findOne({ where: { busy: false } });
+  }
+
+  static freeAgent(id) {
+    return this.update({ busy: false }, { where: { id } });
+  }
+}
 
 Agent.init({
   // attributes

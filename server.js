@@ -8,6 +8,7 @@ const database = require('./src/database');
 
 const app = new Koa();
 app.use(bodyParser());
+
 app.use(responseHandler);
 
 app.use(controllerRoutes.routes());

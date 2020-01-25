@@ -35,4 +35,22 @@ describe('controllers/agents/controller', () => {
       }
     });
   });
+
+  it('It frees an agent', async () => {
+    const agentBefore = await Agent.findOne({ where: { busy: true }});
+    const result = await controller.freeAgent(agentBefore.id);
+    const agentAfter = await Agent.findOne({ where: { id: agentBefore.id }});
+
+    expect(result).toBeTruthy();
+    expect(agentAfter.busy).toEqual(false);
+  });
+
+  it('It makes and agent busy', async () => {
+    const agentBefore = await Agent.findOne({ where: { busy: false }});
+    const result = await controller.setAgentBusy(agentBefore.id);
+    const agentAfter = await Agent.findOne({ where: { id: agentBefore.id }});
+
+    expect(result).toBeTruthy();
+    expect(agentAfter.busy).toEqual(true);
+  });
 });

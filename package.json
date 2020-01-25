@@ -34,7 +34,8 @@
   "nodemonConfig": {
     "ignore": [
       "test/*",
-      "docker/*"
+      "docker/*",
+      "coverage/*"
     ]
   }
 }
