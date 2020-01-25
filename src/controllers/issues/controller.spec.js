@@ -76,12 +76,12 @@ describe('controllers/issues/controller', () => {
     });
 
     expect(result.user).toStrictEqual('user-01');
-    expect(result.agent).toBeNull();
+    expect(result.agentId).toBeNull();
     expect(result.status).toEqual(IssueStatus.OPEN);
     expect(Issue.create).toHaveBeenCalledWith({
       user: 'user-01',
       description: 'Issue description',
-      agent: null,
+      agentId: null,
       status: IssueStatus.OPEN
     });
   });
@@ -102,13 +102,13 @@ describe('controllers/issues/controller', () => {
     });
 
     expect(result.user).toStrictEqual('user-02');
-    expect(result.agent).toEqual('1111');
+    expect(result.agentId).toEqual('1111');
     expect(result.status).toEqual(IssueStatus.PENDING);
 
     expect(Issue.create).toHaveBeenCalledWith({
       user: 'user-02',
       description: 'Issue description',
-      agent: '1111',
+      agentId: '1111',
       status: IssueStatus.PENDING
     });
 
@@ -117,6 +117,21 @@ describe('controllers/issues/controller', () => {
         id: '1111'
       }
     });
+  });
+
+  it('Throws an error when trying to resolve an invalid issue', async () => {
+    let error;
+    try {
+      await controller.resolveIssue({
+        params: {
+          id: 100000
+        }
+      });
+    } catch (err) {
+      error = err.message;
+    }
+
+    expect(error).toEqual('Issue doesn\'t exist');
   });
 
   it('Resolves a PENDING issue and frees an agent', async () => {
@@ -145,7 +160,7 @@ describe('controllers/issues/controller', () => {
       }
     });
 
-    const agent = await Agent.findOne({ where: { id: issueBefore.agent } });
+    const agent = await Agent.findOne({ where: { id: issueBefore.agentId } });
 
     expect(result).toEqual(true);
     expect(issueAfter.status).toEqual(IssueStatus.RESOLVED);
@@ -179,11 +194,11 @@ describe('controllers/issues/controller', () => {
 
     expect(issue2After.id).not.toEqual(issueAfter.id);
 
-    const agent = await Agent.findOne({ where: { id: issueBefore.agent } });
+    const agent = await Agent.findOne({ where: { id: issueBefore.agentId } });
 
     expect(result).toEqual(true);
     expect(issueAfter.status).toEqual(IssueStatus.RESOLVED);
-    expect(issue2After.agent).toEqual(issueAfter.agent);
+    expect(issue2After.agentId).toEqual(issueAfter.agentId);
     expect(agent.busy).toEqual(true);
   });
 });

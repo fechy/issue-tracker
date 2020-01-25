@@ -18,7 +18,7 @@ class Issue extends Model {
 
   static assignAgent(issueId, agentId) {
     return this.update({
-      agent: agentId,
+      agentId,
       status: IssueStatus.PENDING
     }, {
       where: {
@@ -37,7 +37,7 @@ Issue.init({
     type: DataTypes.STRING,
     allowNull: false
   },
-  agent: {
+  agentId: {
     type: DataTypes.STRING,
     defaultValue: null
   },

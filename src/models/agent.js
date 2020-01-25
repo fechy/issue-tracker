@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../database');
+const { Issue } = require('./issue');
 
 const Model = Sequelize.Model;
 class Agent extends Model {
@@ -42,6 +43,8 @@ Agent.init({
     },
   ]
 });
+
+// Agent.Issues = Agent.hasMany(Issue);
 
 Agent.sync();
 

@@ -17,7 +17,7 @@ app.use(controllerRoutes.routes());
 (async () => {
   try {
     // Try DB connection first
-    await database.sync();
+    await database.authenticate();
 
     app.use((ctx, next) => {
       ctx.state.database = database;

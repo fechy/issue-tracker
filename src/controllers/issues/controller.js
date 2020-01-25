@@ -50,12 +50,12 @@ class IssuesController {
       where: { id }
     });
 
-    if (issue.agent) {
+    if (issue.agentId) {
       const openIssue = await Issue.findOpen();
       if (openIssue) {
-        await Issue.assignAgent(openIssue.id, issue.agent);
+        await Issue.assignAgent(openIssue.id, issue.agentId);
       } else {
-        await Agent.freeAgent(issue.agent);
+        await Agent.freeAgent(issue.agentId);
       }
     }
 
