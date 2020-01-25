@@ -1,13 +1,32 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../database');
 
-class Issue extends Model {}
-
 const IssueStatus = {
   OPEN: 'OPEN',
   PENDING: 'PENDING',
   RESOLVED: 'RESOLVED',
 };
+
+class Issue extends Model {
+  static findOpen() {
+    return this.findOne({
+      where: {
+        status: IssueStatus.OPEN
+      }
+    });
+  }
+
+  static assignAgent(issueId, agentId) {
+    return this.update({
+      agent: agentId,
+      status: IssueStatus.PENDING
+    }, {
+      where: {
+        id: issueId
+      }
+    });
+  }
+}
 
 Issue.init({
   user: {

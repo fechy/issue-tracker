@@ -28,11 +28,7 @@ class IssuesController {
     });
 
     if (newIssue && freeAgent) {
-      await Agent.update({ busy: true }, {
-        where: {
-          id: freeAgent.id
-        }
-      });
+      await Agent.setBusy(freeAgent.id);
     }
 
     return newIssue;
@@ -40,7 +36,12 @@ class IssuesController {
 
   async resolveIssue(ctx) {
     const { id } = ctx.params;
-    const issue = await Issue.findOne({ where: { id } });
+    const issue = await Issue.findOne({
+      where: {
+        id
+      }
+    });
+
     if (!issue) {
       throw new Error('Issue doesn\'t exist');
     }
@@ -50,7 +51,12 @@ class IssuesController {
     });
 
     if (issue.agent) {
-      await Agent.freeAgent(issue.agent);
+      const openIssue = await Issue.findOpen();
+      if (openIssue) {
+        await Issue.assignAgent(openIssue.id, issue.agent);
+      } else {
+        await Agent.freeAgent(issue.agent);
+      }
     }
 
     return true;

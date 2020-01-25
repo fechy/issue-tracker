@@ -9,22 +9,12 @@ class AgentsController {
     });
   }
 
-  async freeAgent(agentId) {
-    const result = await Agent.update({ busy: false }, {
-      where: {
-        id: agentId
-      }
-    });
-
-    return result[0] > 0;
+  freeAgent(agentId) {
+    return Agent.freeAgent(agentId);
   }
 
   setAgentBusy(agentId) {
-    return Agent.update({ busy: true }, {
-      where: {
-        id: agentId
-      }
-    });
+    return Agent.setBusy(agentId);
   }
 }
 

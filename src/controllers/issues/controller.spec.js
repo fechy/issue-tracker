@@ -5,7 +5,13 @@ const Agent = require('../../models/agent');
 const controller = new Controller();
 
 describe('controllers/issues/controller', () => {
-  beforeAll(async () => {
+  beforeEach(async () => {
+    const agent = await Agent.create({
+      username: 'agent-1',
+      email: 'agent-1@example.com',
+      busy: true
+    });
+
     await Issue.bulkCreate([
       {
         user: 'user1',
@@ -16,14 +22,15 @@ describe('controllers/issues/controller', () => {
       {
         user: 'user1',
         description: 'Pending issue',
-        agent: 1,
+        agent: agent.id,
         status: IssueStatus.PENDING
       },
     ]);
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await Issue.truncate();
+    await Agent.truncate();
   });
 
   it('Returns open issues', async () => {
@@ -110,5 +117,73 @@ describe('controllers/issues/controller', () => {
         id: '1111'
       }
     });
+  });
+
+  it('Resolves a PENDING issue and frees an agent', async () => {
+    // Make sure there is no OPEN issue
+    await Issue.destroy({
+      where: {
+        status: IssueStatus.OPEN
+      }
+    });
+
+    const issueBefore = await Issue.findOne({
+      where: {
+        status: IssueStatus.PENDING
+      }
+    });
+
+    const result = await controller.resolveIssue({
+      params: {
+        id: issueBefore.id
+      }
+    });
+
+    const issueAfter = await Issue.findOne({
+      where: {
+        id: issueBefore.id
+      }
+    });
+
+    const agent = await Agent.findOne({ where: { id: issueBefore.agent } });
+
+    expect(result).toEqual(true);
+    expect(issueAfter.status).toEqual(IssueStatus.RESOLVED);
+    expect(agent.busy).toEqual(false);
+  });
+
+  it('Resolves a PENDING issue and frees an agent and assigns him to a new issue of there is an OPEN one', async () => {
+    const issueBefore = await Issue.findOne({
+      where: {
+        status: IssueStatus.PENDING
+      }
+    });
+
+    const result = await controller.resolveIssue({
+      params: {
+        id: issueBefore.id
+      }
+    });
+
+    const issueAfter = await Issue.findOne({
+      where: {
+        id: issueBefore.id
+      }
+    });
+
+    const issue2After = await Issue.findOne({
+      where: {
+        status: IssueStatus.PENDING
+      }
+    });
+
+    expect(issue2After.id).not.toEqual(issueAfter.id);
+
+    const agent = await Agent.findOne({ where: { id: issueBefore.agent } });
+
+    expect(result).toEqual(true);
+    expect(issueAfter.status).toEqual(IssueStatus.RESOLVED);
+    expect(issue2After.agent).toEqual(issueAfter.agent);
+    expect(agent.busy).toEqual(true);
   });
 });

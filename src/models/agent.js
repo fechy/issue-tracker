@@ -10,6 +10,10 @@ class Agent extends Model {
   static freeAgent(id) {
     return this.update({ busy: false }, { where: { id } });
   }
+
+  static setBusy(id) {
+    return this.update({ busy: true }, { where: { id } });
+  }
 }
 
 Agent.init({

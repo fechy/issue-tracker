@@ -4,7 +4,7 @@ const Agent = require('../../models/agent');
 const controller = new Controller();
 
 describe('controllers/agents/controller', () => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     await Agent.bulkCreate([
       {
         username: 'test1',
@@ -19,7 +19,7 @@ describe('controllers/agents/controller', () => {
     ]);
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await Agent.truncate();
   });
 
