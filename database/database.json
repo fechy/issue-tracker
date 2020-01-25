@@ -8,7 +8,7 @@
     "operatorsAliases": false
   },
   "test": {
-    "username": "postgres-test",
+    "username": "postgres",
     "password": "default123",
     "database": "postgres",
     "host": "127.0.0.1",
