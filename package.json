@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon --watch"
+    "dev": "nodemon --watch",
+    "lint": "eslint **/*.js"
   },
   "author": "",
   "license": "ISC",
