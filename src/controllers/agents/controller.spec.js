@@ -1,5 +1,6 @@
 const Controller = require('./controller');
 const Agent = require('../../models/agent');
+const { Issue } = require('../../models/issue');
 
 const controller = new Controller();
 
@@ -20,7 +21,8 @@ describe('controllers/agents/controller', () => {
   });
 
   afterEach(async () => {
-    await Agent.truncate();
+    await Issue.truncate();
+    await Agent.destroy({where: {}}, {truncate: false});
   });
 
   it('Returns available agents', async () => {

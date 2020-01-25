@@ -44,7 +44,7 @@ Agent.init({
   ]
 });
 
-// Agent.Issues = Agent.hasMany(Issue);
+Agent.hasOne(Issue);
 
 Agent.sync();
 

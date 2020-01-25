@@ -1,8 +1,9 @@
+const { Issue } = require('./issue');
 const Agent = require('./agent');
 
 
 describe('models/agent', () => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     await Agent.bulkCreate([
       {
         username: 'test1',
@@ -17,8 +18,9 @@ describe('models/agent', () => {
     ]);
   });
 
-  afterAll(async () => {
-    await Agent.truncate();
+  afterEach(async () => {
+    await Issue.truncate();
+    await Agent.destroy({where: {}}, {truncate: false});
   });
 
   it('Find one free agent', async () => {

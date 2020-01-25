@@ -38,8 +38,14 @@ Issue.init({
     allowNull: false
   },
   agentId: {
-    type: DataTypes.STRING,
-    defaultValue: null
+    type: DataTypes.INTEGER,
+    defaultValue: null,
+    references: {
+      model: {
+        tableName: 'agents',
+      },
+      key: 'id'
+    },
   },
   status: {
     type: DataTypes.ENUM({

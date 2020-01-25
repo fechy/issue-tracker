@@ -30,7 +30,7 @@ describe('controllers/issues/controller', () => {
 
   afterEach(async () => {
     await Issue.truncate();
-    await Agent.truncate();
+    await Agent.destroy({where: {}}, {truncate: false});
   });
 
   it('Returns open issues', async () => {
@@ -87,10 +87,16 @@ describe('controllers/issues/controller', () => {
   });
 
   it('Creates a PENDING issue with an agent assigned', async () => {
+    const agent = await Agent.create({
+      username: 'agent-007',
+      email: 'agent-007@example.com',
+      busy: true
+    });
+
     jest.spyOn(Issue, 'create');
     jest.spyOn(Agent, 'update');
     jest.spyOn(Agent, 'findAvailable')
-      .mockResolvedValue(Promise.resolve({ id: '1111' }));
+      .mockResolvedValue(Promise.resolve({ id: agent.id }));
 
     const result = await controller.createIssue({
       request: {
@@ -102,19 +108,19 @@ describe('controllers/issues/controller', () => {
     });
 
     expect(result.user).toStrictEqual('user-02');
-    expect(result.agentId).toEqual('1111');
+    expect(result.agentId).toEqual(agent.id);
     expect(result.status).toEqual(IssueStatus.PENDING);
 
     expect(Issue.create).toHaveBeenCalledWith({
       user: 'user-02',
       description: 'Issue description',
-      agentId: '1111',
+      agentId: agent.id,
       status: IssueStatus.PENDING
     });
 
     expect(Agent.update).toHaveBeenCalledWith({ busy: true }, {
       where: {
-        id: '1111'
+        id: agent.id
       }
     });
   });

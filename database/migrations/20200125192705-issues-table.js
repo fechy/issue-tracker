@@ -21,8 +21,14 @@ module.exports = {
         allowNull: false
       },
       agentId: {
-        type: Sequelize.STRING,
-        allowNull: true
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: {
+            tableName: 'agents',
+          },
+          key: 'id'
+        },
       },
       status: {
         type: Sequelize.ENUM({
