@@ -1,8 +1,12 @@
-const { Issue, IssueStatus } = require('../../models/issue');
-const Agent = require('../../models/agent');
+import Issue, { IssueStatus } from '../../models/issue';
+import Agent from '../../models/agent';
+import KoaContext from '../../types/koa-context.type';
 
 class IssuesController {
-  getOpen() {
+  constructor() {
+  }
+
+  getOpen(): Promise<Issue[]> {
     return Issue.findAll({
       where: {
         status: IssueStatus.OPEN
@@ -10,7 +14,7 @@ class IssuesController {
     });
   }
 
-  async createIssue(ctx) {
+  async createIssue(ctx: KoaContext): Promise<Issue> {
     const { user = null, description = null } = ctx.request.body;
     if (!user || !description) {
       throw new Error('Missing user or issue description!');
@@ -34,7 +38,7 @@ class IssuesController {
     return newIssue;
   }
 
-  async resolveIssue(ctx) {
+  async resolveIssue(ctx: KoaContext): Promise<boolean> {
     const { id } = ctx.params;
     const issue = await Issue.findOne({
       where: {
@@ -63,4 +67,4 @@ class IssuesController {
   }
 }
 
-module.exports = IssuesController;
+export default IssuesController;

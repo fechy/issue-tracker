@@ -36,6 +36,6 @@ We use Postgres to keep the relations between models.
 `.env` files pushed on purpose to ease start of the application. Either way they are not exposing any sensitive data.
 
 # What I would like to do if I had more time?
+- [x] Typescript
 - [ ] Integration tests
 - [ ] Proper error handling
-- [ ] Typescript

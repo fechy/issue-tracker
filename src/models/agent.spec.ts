@@ -1,6 +1,5 @@
-const { Issue } = require('./issue');
-const Agent = require('./agent');
-
+import Issue from './issue';
+import Agent from './agent';
 
 describe('models/agent', () => {
   beforeEach(async () => {
@@ -20,12 +19,12 @@ describe('models/agent', () => {
 
   afterEach(async () => {
     await Issue.truncate();
-    await Agent.destroy({where: {}}, {truncate: false});
+    await Agent.destroy({where: {}});
   });
 
   it('Find one free agent', async () => {
-    const result  = await Agent.findAvailable();
-    expect(result.username).toEqual('test1');
+    const result = await Agent.findAvailable();
+    expect(result!.username).toEqual('test1');
   });
 
   it('Set a busy agent free', async () => {
@@ -35,16 +34,16 @@ describe('models/agent', () => {
       }
     });
 
-    expect(agentBefore.busy).toEqual(true);
+    expect(agentBefore!.busy).toEqual(true);
 
-    await Agent.freeAgent(agentBefore.id);
+    await Agent.freeAgent(agentBefore!.id);
     const agentAfter = await Agent.findOne({
       where: {
-        id: agentBefore.id
+        id: agentBefore!.id
       }
     });
 
-    expect(agentAfter.busy).toEqual(false);
+    expect(agentAfter!.busy).toEqual(false);
   });
 
   it('Set a free agent busy', async () => {
@@ -54,15 +53,15 @@ describe('models/agent', () => {
       }
     });
 
-    expect(agentBefore.busy).toEqual(false);
+    expect(agentBefore!.busy).toEqual(false);
 
-    await Agent.setBusy(agentBefore.id);
+    await Agent.setBusy(agentBefore!.id);
     const agentAfter = await Agent.findOne({
       where: {
-        id: agentBefore.id
+        id: agentBefore!.id
       }
     });
 
-    expect(agentAfter.busy).toEqual(true);
+    expect(agentAfter!.busy).toEqual(true);
   });
 });

@@ -1,14 +1,21 @@
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../database');
+import { Model, DataTypes } from 'sequelize';
+import Agent from './agent';
+import sequelize from '../database';
 
-const IssueStatus = {
+export const IssueStatus = {
   OPEN: 'OPEN',
   PENDING: 'PENDING',
   RESOLVED: 'RESOLVED',
 };
 
 class Issue extends Model {
-  static findOpen() {
+  public id!: number;
+  public user!: string;
+  public description!: string;
+  public agentId!: number;
+  public status!: string | 'OPEN';
+
+  static findOpen(): Promise<Issue | null> {
     return this.findOne({
       where: {
         status: IssueStatus.OPEN
@@ -16,7 +23,7 @@ class Issue extends Model {
     });
   }
 
-  static assignAgent(issueId, agentId) {
+  static assignAgent(issueId: number, agentId: number): Promise<[number, Issue[]]> {
     return this.update({
       agentId,
       status: IssueStatus.PENDING
@@ -41,9 +48,7 @@ Issue.init({
     type: DataTypes.INTEGER,
     defaultValue: null,
     references: {
-      model: {
-        tableName: 'agents',
-      },
+      model: Agent,
       key: 'id'
     },
   },
@@ -69,7 +74,4 @@ Issue.init({
 
 Issue.sync();
 
-module.exports = {
-  Issue,
-  IssueStatus
-};
+export default Issue;

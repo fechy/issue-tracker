@@ -1,7 +1,9 @@
+import KoaContext from '../types/koa-context.type';
+
 /**
  * Centralized response handler
  */
-module.exports = async (ctx, next) => {
+async function responseHandler (ctx: KoaContext, next: Function) : Promise<void> {
   try {
     const result = await next();
     ctx.body = { result };
@@ -14,4 +16,6 @@ module.exports = async (ctx, next) => {
 
     ctx.app.emit('error', err, ctx);
   }
-};
+}
+
+export default responseHandler;

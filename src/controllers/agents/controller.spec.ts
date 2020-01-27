@@ -1,6 +1,6 @@
-const Controller = require('./controller');
-const Agent = require('../../models/agent');
-const { Issue } = require('../../models/issue');
+import Controller from './controller';
+import Agent from '../../models/agent';
+import Issue from '../../models/issue';
 
 const controller = new Controller();
 
@@ -22,7 +22,10 @@ describe('controllers/agents/controller', () => {
 
   afterEach(async () => {
     await Issue.truncate();
-    await Agent.destroy({where: {}}, {truncate: false});
+    await Agent.destroy({
+        where: {}
+      }
+    );
   });
 
   it('Returns available agents', async () => {
@@ -40,19 +43,19 @@ describe('controllers/agents/controller', () => {
 
   it('It frees an agent', async () => {
     const agentBefore = await Agent.findOne({ where: { busy: true }});
-    const result = await controller.freeAgent(agentBefore.id);
-    const agentAfter = await Agent.findOne({ where: { id: agentBefore.id }});
+    const result = await controller.freeAgent(agentBefore!.id);
+    const agentAfter = await Agent.findOne({ where: { id: agentBefore!.id }});
 
     expect(result).toBeTruthy();
-    expect(agentAfter.busy).toEqual(false);
+    expect(agentAfter!.busy).toEqual(false);
   });
 
   it('It makes and agent busy', async () => {
     const agentBefore = await Agent.findOne({ where: { busy: false }});
-    const result = await controller.setAgentBusy(agentBefore.id);
-    const agentAfter = await Agent.findOne({ where: { id: agentBefore.id }});
+    const result = await controller.setAgentBusy(agentBefore!.id);
+    const agentAfter = await Agent.findOne({ where: { id: agentBefore!.id }});
 
     expect(result).toBeTruthy();
-    expect(agentAfter.busy).toEqual(true);
+    expect(agentAfter!.busy).toEqual(true);
   });
 });

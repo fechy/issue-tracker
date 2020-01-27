@@ -1,6 +1,7 @@
-const Controller = require('./controller');
-const { Issue, IssueStatus } = require('../../models/issue');
-const Agent = require('../../models/agent');
+import Controller from './controller';
+import Issue, { IssueStatus } from '../../models/issue';
+import Agent from '../../models/agent';
+import KoaContext from '../../types/koa-context.type';
 
 const controller = new Controller();
 
@@ -30,7 +31,7 @@ describe('controllers/issues/controller', () => {
 
   afterEach(async () => {
     await Issue.truncate();
-    await Agent.destroy({where: {}}, {truncate: false});
+    await Agent.destroy({where: {}});
   });
 
   it('Returns open issues', async () => {
@@ -50,6 +51,7 @@ describe('controllers/issues/controller', () => {
     let error;
     try {
       await controller.createIssue({
+        // @ts-ignore
         request: {
           body: {}
         }
@@ -67,6 +69,7 @@ describe('controllers/issues/controller', () => {
       .mockResolvedValue(Promise.resolve(null));
 
     const result = await controller.createIssue({
+      // @ts-ignore
       request: {
         body: {
           user: 'user-01',
@@ -96,9 +99,10 @@ describe('controllers/issues/controller', () => {
     jest.spyOn(Issue, 'create');
     jest.spyOn(Agent, 'update');
     jest.spyOn(Agent, 'findAvailable')
-      .mockResolvedValue(Promise.resolve({ id: agent.id }));
+      .mockResolvedValue(Promise.resolve({ id: agent.id } as Agent));
 
     const result = await controller.createIssue({
+      // @ts-ignore
       request: {
         body: {
           user: 'user-02',
@@ -128,11 +132,12 @@ describe('controllers/issues/controller', () => {
   it('Throws an error when trying to resolve an invalid issue', async () => {
     let error;
     try {
+      // @ts-ignore
       await controller.resolveIssue({
         params: {
           id: 100000
         }
-      });
+      } as KoaContext);
     } catch (err) {
       error = err.message;
     }
@@ -154,23 +159,24 @@ describe('controllers/issues/controller', () => {
       }
     });
 
+    // @ts-ignore
     const result = await controller.resolveIssue({
       params: {
-        id: issueBefore.id
+        id: issueBefore!.id
       }
-    });
+    } as KoaContext);
 
     const issueAfter = await Issue.findOne({
       where: {
-        id: issueBefore.id
+        id: issueBefore!.id
       }
     });
 
-    const agent = await Agent.findOne({ where: { id: issueBefore.agentId } });
+    const agent = await Agent.findOne({ where: { id: issueBefore!.agentId } });
 
     expect(result).toEqual(true);
-    expect(issueAfter.status).toEqual(IssueStatus.RESOLVED);
-    expect(agent.busy).toEqual(false);
+    expect(issueAfter!.status).toEqual(IssueStatus.RESOLVED);
+    expect(agent!.busy).toEqual(false);
   });
 
   it('Resolves a PENDING issue and frees an agent and assigns him to a new issue of there is an OPEN one', async () => {
@@ -180,15 +186,16 @@ describe('controllers/issues/controller', () => {
       }
     });
 
+    // @ts-ignore
     const result = await controller.resolveIssue({
       params: {
-        id: issueBefore.id
+        id: issueBefore!.id
       }
-    });
+    } as KoaContext);
 
     const issueAfter = await Issue.findOne({
       where: {
-        id: issueBefore.id
+        id: issueBefore!.id
       }
     });
 
@@ -198,13 +205,13 @@ describe('controllers/issues/controller', () => {
       }
     });
 
-    expect(issue2After.id).not.toEqual(issueAfter.id);
+    expect(issue2After!.id).not.toEqual(issueAfter!.id);
 
-    const agent = await Agent.findOne({ where: { id: issueBefore.agentId } });
+    const agent = await Agent.findOne({ where: { id: issueBefore!.agentId } });
 
     expect(result).toEqual(true);
-    expect(issueAfter.status).toEqual(IssueStatus.RESOLVED);
-    expect(issue2After.agentId).toEqual(issueAfter.agentId);
-    expect(agent.busy).toEqual(true);
+    expect(issueAfter!.status).toEqual(IssueStatus.RESOLVED);
+    expect(issue2After!.agentId).toEqual(issueAfter!.agentId);
+    expect(agent!.busy).toEqual(true);
   });
 });

@@ -1,20 +1,18 @@
-const Koa = require('koa');
-const bodyParser = require('koa-bodyparser');
+import Koa from 'koa';
+import bodyParser from 'koa-bodyparser';
 
-const { appPort } = require('./config');
-const { responseHandler } = require('./src/middleware');
-const controllerRoutes = require('./src/controllers');
-const database = require('./src/database');
+import { appPort } from './config';
+import responseHandler from './src/middleware';
+import controllerRoutes from './src/controllers';
+import database from './src/database';
 
 const app = new Koa();
+
 app.use(bodyParser());
-
 app.use(responseHandler);
-
 app.use(controllerRoutes.routes());
 
-
-(async () => {
+(async (): Promise<void> => {
   try {
     // Try DB connection first
     await database.authenticate();
