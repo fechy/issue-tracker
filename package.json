@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon --watch",
+    "start": "node server.js",
     "lint": "eslint **/*.js",
     "test": "jest --config ./jest.config.js --forceExit --coverage --runInBand --detectOpenHandles",
     "db:migrate": "npx sequelize-cli db:migrate && npx sequelize-cli db:migrate --env test",

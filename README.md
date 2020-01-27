@@ -1,6 +1,8 @@
 Issue Tracker
 =============
 
+NOTE: Typescript version on `typescript` branch!
+
 ## Start
 
 Run this commands in sequence:
@@ -36,6 +38,6 @@ We use Postgres to keep the relations between models.
 `.env` files pushed on purpose to ease start of the application. Either way they are not exposing any sensitive data.
 
 # What I would like to do if I had more time?
+- [X] Typescript
 - [ ] Integration tests
 - [ ] Proper error handling
-- [ ] Typescript
